@@ -1,4 +1,6 @@
 # favlist
+[![Build Status](https://travis-ci.com/spenserblack/favlist.svg?branch=master)](https://travis-ci.com/spenserblack/favlist)
+
 A tool to make lists of my favorite things
 
 # (Planned) Usage
