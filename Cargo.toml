@@ -1,23 +1,22 @@
 [package]
-name = ""
+name = "favlist"
 version = "0.0.1"
-authors = ["First Last <user@email>"]
+authors = ["Spenser Black <spenserblack01@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-description = ""
+# description = ""
 readme = "README.md"
-keywords = []
-categories = []
-repository = ""
+# keywords = []
+# categories = []
+repository = "https://github.com/spenserblack/favlist"
 publish = false # You should at least look at this file before you publish
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+rusqlite = "0.21"
 
 [badges]
-is-it-maintained-issue-resolution = { repository = "user/repo" }
-is-it-maintained-open-issues = { repository = "user/repo" }
+is-it-maintained-issue-resolution = { repository = "spenserblack/favlist" }
+is-it-maintained-open-issues = { repository = "spenserblack/favlist" }
 # Options
 # - `actively-developed`: New features are being added and bugs are being fixed.
 # - `passively-maintained`: There are no plans for new features, but the maintainer intends to
