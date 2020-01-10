@@ -6,3 +6,9 @@ A tool to make lists of my favorite things
 # create a new list of movies with an important (not-null) title and year
 favlist new Movies !Title Year
 ```
+
+# Build
+## Dependencies
+```bash
+apt install libsqlite3-dev
+```
