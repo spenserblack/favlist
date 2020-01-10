@@ -12,6 +12,7 @@ repository = "https://github.com/spenserblack/favlist"
 publish = false # You should at least look at this file before you publish
 
 [dependencies]
+clap = "2.33"
 rusqlite = "0.21"
 
 [badges]
