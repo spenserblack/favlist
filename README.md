@@ -7,7 +7,18 @@ A tool to make lists of my favorite things
 ```bash
 # create a new list of movies with an important (not-null) title and an 8-bit integer year
 favlist new Movies !Title Year@i8
+# list movies with "Curse" in the title made in 2006 and print in YAML format
+favlist list Movies -f Title Curse --filter Year 2006 --yaml
 ```
+- [ ] Create a new list with `favlist new`
+- [ ] Delete a list with `favlist rem`
+- [ ] Add to list with `favlist add`
+  - Will prompt for data if not passed via command-line
+- [ ] Remove from list with `favlist sub`
+  - Will prompt for a row number and provide previews
+  - Can use similar `--filter` optons as `list` to remove multiple rows
+- [ ] List entries with `favlist list`
+- [ ] TUI interface opened by simply running `favlist` (feature must be enabled)
 
 # Build
 ## Dependencies
