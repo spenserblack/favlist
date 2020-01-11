@@ -13,12 +13,15 @@ favlist list Movies -f Title Curse --filter Year 2006 --yaml
 - [ ] Create a new list with `favlist new`
 - [ ] Delete a list with `favlist rem`
 - [ ] Add to list with `favlist add`
-  - Will prompt for data if not passed via command-line
+  - [ ] Prompts for data if not passed via command-line
 - [ ] Remove from list with `favlist sub`
-  - Will prompt for a row number and provide previews
+  - [ ] Will prompt for a row number and provide previews
   - [ ] Can use similar `--filter` optons as `list` to remove multiple rows
+- [ ] `favlist edit` to edit a row
+  - [ ] Provides preview and prompts for row if not provided
 - [ ] List entries with `favlist list`
 - [ ] TUI interface opened by simply running `favlist` (feature must be enabled)
+- [ ] Defaults to storing with sqlite, but can use other formats, such as a folder of JSON files instead
 
 # Build
 ## Dependencies
