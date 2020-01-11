@@ -16,7 +16,7 @@ favlist list Movies -f Title Curse --filter Year 2006 --yaml
   - Will prompt for data if not passed via command-line
 - [ ] Remove from list with `favlist sub`
   - Will prompt for a row number and provide previews
-  - Can use similar `--filter` optons as `list` to remove multiple rows
+  - [ ] Can use similar `--filter` optons as `list` to remove multiple rows
 - [ ] List entries with `favlist list`
 - [ ] TUI interface opened by simply running `favlist` (feature must be enabled)
 
