@@ -22,6 +22,7 @@ favlist list Movies -f Title Curse --filter Year 2006 --yaml
 - [ ] List entries with `favlist list`
 - [ ] TUI interface opened by simply running `favlist` (feature must be enabled)
 - [ ] Defaults to storing with sqlite, but can use other formats, such as a folder of JSON files instead
+- [ ] `.favlistrc.yml` file for config options such as default directory
 
 # Build
 ## Dependencies
