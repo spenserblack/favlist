@@ -45,10 +45,12 @@ mod table_data {
             }).collect();
             let name = name.as_str();
             
-            Column {
+            let column = Column {
                 not_null,
                 name,
-            }
+            };
+            
+            Ok(column)
         }
     }
     
