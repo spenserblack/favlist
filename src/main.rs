@@ -59,14 +59,14 @@ mod table_data {
         
         #[test]
         fn plain_column() {
-            let column = "Title".parse().unwrap();
+            let column: Column = "Title".parse().unwrap();
             assert_eq!("Title", column.name);
             assert_eq!(false, column.not_null);
         }
         
         #[test]
         fn important_column() {
-            let column = "!Title".parse().unwrap();
+            let column: Column = "!Title".parse().unwrap();
             assert_eq!("Title", column.name);
             assert_eq!(true, column.not_null);
         }
