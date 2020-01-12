@@ -42,7 +42,7 @@ mod table_data {
                 } else {
                     Some(c)
                 }
-            }|).collect();
+            }).collect();
             let name = name.as_str();
             
             Column {
