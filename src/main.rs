@@ -35,7 +35,7 @@ mod table_data {
         // TODO Use Regex for better parsing
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let mut not_null = false;
-            let name: String = s.chars().enumerate().filter_map(|(i, c) {
+            let name: String = s.chars().enumerate().filter_map(|(i, c)| {
                 if i == 0 && c == '!' {
                     not_null = true;
                     None
