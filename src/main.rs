@@ -24,12 +24,12 @@ fn main() {
 mod table_data {
     use std::str::FromStr;
     
-    pub struct Column<'a> {
+    pub struct Column {
         name: String,
         not_null: bool,
     }
     
-    impl<'a> FromStr for Column<'a> {
+    impl FromStr for Column {
         type Err = String; // TODO Use better error type
         
         // TODO Use Regex for better parsing
