@@ -25,7 +25,7 @@ mod table_data {
     use std::str::FromStr;
     
     pub struct Column<'a> {
-        name: &'a str,
+        name: String,
         not_null: bool,
     }
     
@@ -43,7 +43,6 @@ mod table_data {
                     Some(c)
                 }
             }).collect();
-            let name = name.as_str();
             
             let column = Column {
                 not_null,
