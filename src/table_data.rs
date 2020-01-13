@@ -1,6 +1,9 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::str::FromStr;
+use std::{
+    fmt::{self, Display},
+    str::FromStr,
+};
 
 #[derive(Debug)]
 pub struct Column {
@@ -17,6 +20,20 @@ enum DataType {
     Blob,
     Real,
     Numeric,
+}
+
+impl Display for DataType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use DataType::*;
+
+        match self {
+            Integer => write!(f, "INTEGER"),
+            Text => write!(f, "TEXT"),
+            Blob => write!(f, "BLOB"),
+            Real => write!(f, "REAL"),
+            Numeric => write!(f, "NUMERIC"),
+        }
+    }
 }
 
 impl FromStr for Column {
