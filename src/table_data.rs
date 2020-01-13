@@ -2,6 +2,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Column {
     name: String,
     not_null: bool,
@@ -35,7 +36,7 @@ impl FromStr for Column {
                 "text" => DataType::Text,
                 "real" => DataType::Real,
                 "num" => DataType::Numeric,
-                s => unimplemented!("{}", s),
+                s => return Err(format!("Invalid column name: {}", s)),
             }
         } else {
             DataType::Blob
@@ -90,5 +91,12 @@ mod tests {
         assert_eq!(true, column.not_null);
         let data_type = column.data_type;
         assert_matches!(DataType::Integer, data_type);
+    }
+
+    #[test]
+    fn invalid_column_type() {
+        let column: Result<Column, _> = "!Year@what".parse();
+        let expected: Result<Column, _> = Err("Invalid column type: what");
+        assert_matches!(expected, column);
     }
 }
