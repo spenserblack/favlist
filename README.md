@@ -11,7 +11,7 @@ favlist new Movies *Title Year@int
 favlist list Movies -f Title Curse --filter Year 2006 --yaml
 ```
 - [x] Create a new list with `favlist new`
-- [ ] Delete a list with `favlist rem`
+- [x] Delete a list with `favlist rem`
 - [ ] Add to list with `favlist add`
   - [ ] Prompts for data if not passed via command-line
 - [ ] Remove from list with `favlist sub`

@@ -24,4 +24,9 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
                 .help("Column definition(s)")
                 .required(true)
                 .multiple(true)))
+        .subcommand(SubCommand::with_name("rem")
+            .about("Removes a list")
+            .arg(Arg::with_name("list_name")
+                .help("The name of the list to be deleted")
+                .required(true)))
 }
