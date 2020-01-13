@@ -22,6 +22,17 @@ enum DataType {
     Numeric,
 }
 
+impl Column {
+    pub fn declaration(&self) -> String {
+        format!(
+            "{} {} {}",
+            self.name,
+            self.data_type,
+            if self.not_null { "NOT NULL" } else { "" },
+        )
+    }
+}
+
 impl Display for DataType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use DataType::*;
@@ -110,5 +121,11 @@ mod tests {
     fn invalid_column_type() {
         let column: Result<Column, _> = "!Year@what".parse();
         assert_matches!(column, Err(_));
+    }
+
+    #[test]
+    fn important_int_column_declaration() {
+        let column: Column = "!Year@int".parse().unwrap();
+        assert_eq!("Year INTEGER NOT NULL", column.declaration());
     }
 }
