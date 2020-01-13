@@ -22,7 +22,6 @@ enum DataType {
 impl FromStr for Column {
     type Err = String; // TODO Use better error type
 
-    // TODO Use Regex for better parsing
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         lazy_static! {
             static ref COLUMN_REGEX: Regex =
