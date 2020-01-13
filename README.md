@@ -5,8 +5,8 @@ A tool to make lists of my favorite things
 
 # (Planned) Usage
 ```bash
-# create a new list of movies with an important (not-null) title and an 8-bit integer year
-favlist new Movies !Title Year@i8
+# create a new list of movies with an important (not-null) title and an integer year
+favlist new Movies !Title Year@int
 # list movies with "Curse" in the title made in 2006 and print in YAML format
 favlist list Movies -f Title Curse --filter Year 2006 --yaml
 ```
