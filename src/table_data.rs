@@ -25,7 +25,8 @@ impl FromStr for Column {
     // TODO Use Regex for better parsing
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         lazy_static! {
-            static ref COLUMN_REGEX: Regex = Regex::new(r"(?P<important>^!)?(?P<name>\w+)@?(?P<type>\w+)?").unwrap();
+            static ref COLUMN_REGEX: Regex =
+                Regex::new(r"(?P<important>^!)?(?P<name>\w+)@?(?P<type>\w+)?").unwrap();
         }
         let caps = COLUMN_REGEX.captures(s).unwrap();
         let not_null = caps.name("important").is_some();
@@ -54,8 +55,8 @@ impl FromStr for Column {
 
 #[cfg(test)]
 mod tests {
-    use assert_matches::assert_matches;
     use super::*;
+    use assert_matches::assert_matches;
 
     #[test]
     fn plain_column() {
