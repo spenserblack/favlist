@@ -5,6 +5,11 @@ use std::{
     str::FromStr,
 };
 
+pub struct Table {
+    name: String,
+    columns: Vec<Column>,
+}
+
 #[derive(Debug)]
 pub struct Column {
     name: String,
@@ -22,14 +27,31 @@ enum DataType {
     Numeric,
 }
 
-impl Column {
+impl Table {
     pub fn declaration(&self) -> String {
         format!(
-            "{} {} {}",
+            "CREATE TABLE {table_name} (
+id INTEGER PRIMARY KEY,
+{columns}
+)\n",
+            table_name = self.name,
+            columns = self.columns.iter().map(|c| c.declaration()).collect::<Vec<_>>().join(",\n"),
+        )
+    }
+}
+
+impl Column {
+    fn declaration(&self) -> String {
+        let declaration = format!(
+            "{} {}",
             self.name,
             self.data_type,
-            if self.not_null { "NOT NULL" } else { "" },
-        )
+        );
+        if self.not_null {
+            format!("{} NOT NULL", declaration)
+        } else {
+            declaration
+        }
     }
 }
 
@@ -127,5 +149,18 @@ mod tests {
     fn important_int_column_declaration() {
         let column: Column = "!Year@int".parse().unwrap();
         assert_eq!("Year INTEGER NOT NULL", column.declaration());
+    }
+
+    #[test]
+    fn table_declaration() {
+        let table = Table {
+            name: "Movies".into(),
+            columns: vec!["!Title".parse().unwrap(), "Year@int".parse().unwrap()],
+        };
+
+        assert_eq!(
+            include_str!("../resources/tests/table_data.tests.table_declaration.sql"),
+            table.declaration(),
+        );
     }
 }
