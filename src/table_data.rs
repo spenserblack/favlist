@@ -1,3 +1,4 @@
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::str::FromStr;
 
@@ -22,8 +23,10 @@ impl FromStr for Column {
 
     // TODO Use Regex for better parsing
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let regex = Regex::new(r"(?P<important>^!)?(?P<name>\w+)@?(?P<type>\w+)?").unwrap();
-        let caps = regex.captures(s).unwrap();
+        lazy_static! {
+            static ref COLUMN_REGEX: Regex = Regex::new(r"(?P<important>^!)?(?P<name>\w+)@?(?P<type>\w+)?").unwrap();
+        }
+        let caps = COLUMN_REGEX.captures(s).unwrap();
         let not_null = caps.name("important").is_some();
         let name = caps.name("name").unwrap().as_str().into();
         let data_type = if let Some(cap) = caps.name("type") {
