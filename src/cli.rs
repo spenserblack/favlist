@@ -1,6 +1,14 @@
 use clap::{crate_description, crate_name, crate_version, App, Arg, SubCommand};
 
 const DEFAULT_DB_NAME: &str = "favlist.sqlite";
+const COLUMN_DEFINITION_HELP: &str = "\
+DEFINING A COLUMN:
+- A basic column: `ColumnName`
+- An important column: `~ColumnName`
+- An integer column: `Column@int
+- A text column: `Column@text
+- A real column: `Column@real
+- A numeric column: `Column@num";
 
 pub fn app<'a, 'b>() -> App<'a, 'b> {
     App::new(crate_name!())
@@ -23,7 +31,8 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
             .arg(Arg::with_name("columns")
                 .help("Column definition(s)")
                 .required(true)
-                .multiple(true)))
+                .multiple(true))
+            .after_help(COLUMN_DEFINITION_HELP))
         .subcommand(SubCommand::with_name("rem")
             .about("Removes a list")
             .arg(Arg::with_name("list name")
