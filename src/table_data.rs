@@ -87,7 +87,7 @@ impl FromStr for Column {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         lazy_static! {
             static ref COLUMN_REGEX: Regex =
-                Regex::new(r"(?P<important>^!)?(?P<name>\w+)@?(?P<type>\w+)?").unwrap();
+                Regex::new(r"(?P<important>^\*)?(?P<name>\w+)@?(?P<type>\w+)?").unwrap();
         }
         let caps = COLUMN_REGEX.captures(s).unwrap();
         let not_null = caps.name("important").is_some();
@@ -137,7 +137,7 @@ mod tests {
 
     #[test]
     fn important_column() {
-        let column: Column = "!Title".parse().unwrap();
+        let column: Column = "*Title".parse().unwrap();
         assert_eq!("Title", column.name);
         assert_eq!(true, column.not_null);
         assert_matches!(column.data_type, DataType::Blob);
@@ -145,7 +145,7 @@ mod tests {
 
     #[test]
     fn important_int_column() {
-        let column: Column = "!Year@int".parse().unwrap();
+        let column: Column = "*Year@int".parse().unwrap();
         assert_eq!("Year", column.name);
         assert_eq!(true, column.not_null);
         assert_matches!(column.data_type, DataType::Integer);
@@ -153,13 +153,13 @@ mod tests {
 
     #[test]
     fn invalid_column_type() {
-        let column: Result<Column, _> = "!Year@what".parse();
+        let column: Result<Column, _> = "*Year@what".parse();
         assert_matches!(column, Err(_));
     }
 
     #[test]
     fn important_int_column_declaration() {
-        let column: Column = "!Year@int".parse().unwrap();
+        let column: Column = "*Year@int".parse().unwrap();
         assert_eq!("Year INTEGER NOT NULL", column.declaration());
     }
 
@@ -167,7 +167,7 @@ mod tests {
     fn table_declaration() {
         let table = Table {
             name: "Movies".into(),
-            columns: vec!["!Title".parse().unwrap(), "Year@int".parse().unwrap()],
+            columns: vec!["*Title".parse().unwrap(), "Year@int".parse().unwrap()],
         };
 
         assert_eq!(
