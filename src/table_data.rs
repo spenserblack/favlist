@@ -63,8 +63,7 @@ mod tests {
         let column: Column = "Title".parse().unwrap();
         assert_eq!("Title", column.name);
         assert_eq!(false, column.not_null);
-        let data_type = column.data_type;
-        assert_matches!(DataType::Blob, data_type);
+        assert_matches!(column.data_type, DataType::Blob);
     }
 
     #[test]
@@ -72,8 +71,7 @@ mod tests {
         let column: Column = "Year@int".parse().unwrap();
         assert_eq!("Year", column.name);
         assert_eq!(false, column.not_null);
-        let data_type = column.data_type;
-        assert_matches!(DataType::Integer, data_type);
+        assert_matches!(column.data_type, DataType::Integer);
     }
 
     #[test]
@@ -81,8 +79,7 @@ mod tests {
         let column: Column = "!Title".parse().unwrap();
         assert_eq!("Title", column.name);
         assert_eq!(true, column.not_null);
-        let data_type = column.data_type;
-        assert_matches!(DataType::Blob, data_type);
+        assert_matches!(column.data_type, DataType::Blob);
     }
 
     #[test]
@@ -90,14 +87,12 @@ mod tests {
         let column: Column = "!Year@int".parse().unwrap();
         assert_eq!("Year", column.name);
         assert_eq!(true, column.not_null);
-        let data_type = column.data_type;
-        assert_matches!(DataType::Integer, data_type);
+        assert_matches!(column.data_type, DataType::Integer);
     }
 
     #[test]
     fn invalid_column_type() {
         let column: Result<Column, _> = "!Year@what".parse();
-        let expected: Result<Column, _> = Err("Invalid column type: what");
-        assert_matches!(expected, column);
+        assert_matches!(column, Err(_));
     }
 }
