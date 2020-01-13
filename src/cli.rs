@@ -16,7 +16,7 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
         )
         .subcommand(SubCommand::with_name("new")
             .about("Creates a new list")
-            .arg(Arg::with_name("list_name")
+            .arg(Arg::with_name("list name")
                 .help("The name of the list to be created")
                 .required(true)
                 .index(1))
@@ -26,7 +26,7 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
                 .multiple(true)))
         .subcommand(SubCommand::with_name("rem")
             .about("Removes a list")
-            .arg(Arg::with_name("list_name")
+            .arg(Arg::with_name("list name")
                 .help("The name of the list to be deleted")
                 .required(true)))
 }
