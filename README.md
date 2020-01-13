@@ -10,7 +10,7 @@ favlist new Movies !Title Year@int
 # list movies with "Curse" in the title made in 2006 and print in YAML format
 favlist list Movies -f Title Curse --filter Year 2006 --yaml
 ```
-- [ ] Create a new list with `favlist new`
+- [x] Create a new list with `favlist new`
 - [ ] Delete a list with `favlist rem`
 - [ ] Add to list with `favlist add`
   - [ ] Prompts for data if not passed via command-line

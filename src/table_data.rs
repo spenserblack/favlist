@@ -1,3 +1,4 @@
+use clap::Values;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::{
@@ -28,6 +29,17 @@ enum DataType {
 }
 
 impl Table {
+    // TODO Pass Iterator instead of Vec?
+    // TODO Return `Result` (and eliminate `unwrap`s)
+    pub fn new<'a>(name: &str, columns: Values<'a>) -> Self {
+        let name = name.into();
+        let columns = columns.map(|s| s.parse().unwrap()).collect();
+        Table {
+            name,
+            columns,
+        }
+    }
+
     pub fn declaration(&self) -> String {
         format!(
             "CREATE TABLE {table_name} (

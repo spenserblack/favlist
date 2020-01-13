@@ -1,5 +1,5 @@
 use super::DEFAULT_DB_NAME;
-use clap::{crate_description, crate_name, crate_version, App, Arg};
+use clap::{crate_description, crate_name, crate_version, App, Arg, SubCommand};
 
 pub fn app<'a, 'b>() -> App<'a, 'b> {
     App::new(crate_name!())
@@ -13,4 +13,14 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
                 .takes_value(true)
                 .default_value(DEFAULT_DB_NAME),
         )
+        .subcommand(SubCommand::with_name("new")
+            .about("Creates a new list")
+            .arg(Arg::with_name("list_name")
+                .help("The name of the list to be created")
+                .required(true)
+                .index(1))
+            .arg(Arg::with_name("columns")
+                .help("Column definition(s)")
+                .required(true)
+                .multiple(true)))
 }
