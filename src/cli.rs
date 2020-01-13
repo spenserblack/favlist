@@ -1,5 +1,6 @@
-use super::DEFAULT_DB_NAME;
 use clap::{crate_description, crate_name, crate_version, App, Arg, SubCommand};
+
+const DEFAULT_DB_NAME: &str = "favlist.sqlite";
 
 pub fn app<'a, 'b>() -> App<'a, 'b> {
     App::new(crate_name!())
