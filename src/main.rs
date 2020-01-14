@@ -18,6 +18,9 @@ fn main() {
             &format!(include_str!("../resources/favlist-rem.sql"), table_name = table_name),
             NO_PARAMS,
         ).unwrap();
+    } else if let Some(matches) = matches.subcommand_matches("add") {
+        println!("Table name: {:?}", matches.value_of("list name"));
+        println!("Column data: {:?}", matches.values_of("columns"));
     }
 }
 
