@@ -15,7 +15,7 @@ fn main() {
     } else if let Some(matches) = matches.subcommand_matches("rem") {
         let table_name = matches.value_of("list name").unwrap();
         conn.execute(
-            &format!(include_str!("../resources/favlist-rem.sql"), table_name = table_name),
+            &format!("DROP TABLE {table_name}", table_name = table_name),
             NO_PARAMS,
         ).unwrap();
     } else if let Some(matches) = matches.subcommand_matches("add") {
