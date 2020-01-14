@@ -165,13 +165,19 @@ mod tests {
 
     #[test]
     fn table_declaration() {
+        let expected = "\
+CREATE TABLE Movies (
+id INTEGER PRIMARY KEY,
+Title BLOB NOT NULL,
+Year INTEGER
+)\n";
         let table = Table {
             name: "Movies".into(),
             columns: vec!["~Title".parse().unwrap(), "Year@int".parse().unwrap()],
         };
 
         assert_eq!(
-            include_str!("../resources/tests/table_data.tests.table_declaration.sql"),
+            expected,
             table.declaration(),
         );
     }

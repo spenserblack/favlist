@@ -16,7 +16,12 @@ exclude = [".travis.yml", ".editorconfig", ".github/*"]
 clap = "2.33"
 lazy_static = "1.4"
 regex = "1"
+
+[target.'cfg(not(windows))'.dependencies]
 rusqlite = "0.21"
+
+[target.'cfg(windows)'.dependencies]
+rusqlite = { version = "0.21", features = ["bundled"] }
 
 [dev-dependencies]
 assert_matches = "1.3"
