@@ -20,7 +20,22 @@ fn main() {
         ).unwrap();
     } else if let Some(matches) = matches.subcommand_matches("add") {
         println!("Table name: {:?}", matches.value_of("list name"));
-        println!("Column data: {:?}", matches.values_of("columns"));
+        let columns = if let Some(columns) = matches.values_of("columns") {
+            let (column_names, column_data): (Vec<_>, Vec<_>) = columns
+                .enumerate()
+                .partition(|(i, _v)| { i % 2 == 0});
+
+            column_names
+                .iter()
+                .map(|(_i, v)| v.to_owned())
+                .zip(column_data
+                    .iter()
+                    .map(|(_i, v)| v.to_owned()))
+                .collect()
+        } else {
+            Vec::new()
+        };
+        println!("Column data: {:?}", columns);
     }
 }
 
