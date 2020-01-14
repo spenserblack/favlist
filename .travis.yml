@@ -4,7 +4,6 @@ rust:
   - nightly
 os:
   - linux
-  - windows
 jobs:
   allow_failures:
     - rust: nightly
