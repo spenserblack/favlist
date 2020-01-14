@@ -1,10 +1,11 @@
+before_install:
+  
 language: rust
 rust:
   - stable
   - nightly
 os:
   - linux
-  - windows
 jobs:
   allow_failures:
     - rust: nightly
