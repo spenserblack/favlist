@@ -44,31 +44,15 @@ fn main() {
 
         let mut stmt = conn.prepare(&script).unwrap();
         let column_count = stmt.column_count();
-        let header: Vec<_> = stmt.column_names().iter().map(|c| String::from(*c)).collect();
+        // let header: Vec<_> = stmt.column_names().iter().map(|c| String::from(*c)).collect();
         let mut rows = stmt.query(NO_PARAMS).unwrap();
         // For ease of use to convert to JSON, as array of objects
-        let mut table_representation: Vec<IndexMap<&str, String>> = Vec::new();
-        while let Ok(Some(sql_row)) = rows.next() {
-            let mut hashmap = IndexMap::new();
-            for i in 0..column_count {
-                let value_ref = sql_row.get_raw(i);
-                let cell = match value_ref {
-                    ValueRef::Null => "<NULL>".to_string(),
-                    ValueRef::Integer(i) => i.to_string(),
-                    ValueRef::Real(r) => r.to_string(),
-                    ValueRef::Text(utf8) => from_utf8(utf8).unwrap().to_string(),
-                    ValueRef::Blob(utf8) => from_utf8(utf8).unwrap().to_string(),
-                };
-                hashmap.insert(header[i].as_str(), cell);
-            }
-            table_representation.push(hashmap);
-        }
         let out = if matches.is_present("json") {
-            printer::json(&table_representation)
+            printer::json(&mut rows)
         } else if matches.is_present("yaml") {
-            printer::yaml(&table_representation)
+            printer::yaml(&mut rows)
         } else {
-            printer::prettytable(&table_representation, &header)
+            printer::prettytable(&mut rows)
         };
         println!("{}", out);
     }
