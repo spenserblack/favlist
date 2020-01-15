@@ -1,3 +1,4 @@
+use indexmap::IndexMap;
 use rusqlite::{Connection, named_params, NO_PARAMS};
 use rusqlite::types::ValueRef;
 use std::str::from_utf8;
@@ -43,22 +44,17 @@ fn main() {
 
         let mut stmt = conn.prepare(&script).unwrap();
         let column_count = stmt.column_count();
-        let column_names = stmt.column_names();
-        println!("{}", column_names.join(", "));
+        // let header: Vec<_> = stmt.column_names().iter().map(|c| String::from(*c)).collect();
         let mut rows = stmt.query(NO_PARAMS).unwrap();
-        while let Ok(Some(row)) = rows.next() {
-            for i in 0..column_count {
-                let value_ref = row.get_raw(i);
-                match value_ref {
-                    ValueRef::Null => print!("<NULL>, "),
-                    ValueRef::Integer(i) => print!("{}, ", i),
-                    ValueRef::Real(r) => print!("{}, ", r),
-                    ValueRef::Text(utf8) => print!("{}, ", from_utf8(utf8).unwrap()),
-                    ValueRef::Blob(utf8) => print!("{}, ", from_utf8(utf8).unwrap()),
-                }
-            }
-            println!();
-        }
+        // For ease of use to convert to JSON, as array of objects
+        let out = if matches.is_present("json") {
+            printer::json(&mut rows)
+        } else if matches.is_present("yaml") {
+            printer::yaml(&mut rows)
+        } else {
+            printer::prettytable(&mut rows)
+        };
+        println!("{}", out);
     }
 }
 
@@ -79,6 +75,7 @@ fn column_partitioner<'a, I>(clap_values: I) -> (Vec<&'a str>, Vec<&'a str>)
 }
 
 mod cli;
+mod printer;
 mod table_data;
 
 #[cfg(test)]
