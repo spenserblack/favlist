@@ -1,5 +1,6 @@
 use rusqlite::{Connection, named_params, NO_PARAMS};
 use rusqlite::types::ValueRef;
+use std::collections::HashMap;
 use std::str::from_utf8;
 
 fn main() {
@@ -43,22 +44,26 @@ fn main() {
 
         let mut stmt = conn.prepare(&script).unwrap();
         let column_count = stmt.column_count();
-        let column_names = stmt.column_names();
-        println!("{}", column_names.join(", "));
+        let header: Vec<_> = stmt.column_names().iter().map(|c| String::from(*c)).collect();
         let mut rows = stmt.query(NO_PARAMS).unwrap();
-        while let Ok(Some(row)) = rows.next() {
+        // For ease of use to convert to JSON, as array of objects
+        let mut table_representation: Vec<HashMap<&str, String>> = Vec::new();
+        while let Ok(Some(sql_row)) = rows.next() {
+            let mut hashmap = HashMap::new();
             for i in 0..column_count {
-                let value_ref = row.get_raw(i);
-                match value_ref {
-                    ValueRef::Null => print!("<NULL>, "),
-                    ValueRef::Integer(i) => print!("{}, ", i),
-                    ValueRef::Real(r) => print!("{}, ", r),
-                    ValueRef::Text(utf8) => print!("{}, ", from_utf8(utf8).unwrap()),
-                    ValueRef::Blob(utf8) => print!("{}, ", from_utf8(utf8).unwrap()),
-                }
+                let value_ref = sql_row.get_raw(i);
+                let cell = match value_ref {
+                    ValueRef::Null => "<NULL>".to_string(),
+                    ValueRef::Integer(i) => i.to_string(),
+                    ValueRef::Real(r) => r.to_string(),
+                    ValueRef::Text(utf8) => from_utf8(utf8).unwrap().to_string(),
+                    ValueRef::Blob(utf8) => from_utf8(utf8).unwrap().to_string(),
+                };
+                hashmap.insert(header[i].as_str(), cell);
             }
-            println!();
+            table_representation.push(hashmap);
         }
+        println!("{:?}", table_representation);
     }
 }
 
