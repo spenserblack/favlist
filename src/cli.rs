@@ -13,7 +13,7 @@ DEFINING A COLUMN:
 pub fn app<'a, 'b>() -> App<'a, 'b> {
     App::new(crate_name!())
         .version(crate_version!())
-        // .about(crate_description!())
+        .about(crate_description!())
         .arg(
             Arg::with_name("database")
                 .long("db")
