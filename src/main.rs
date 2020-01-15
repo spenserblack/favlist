@@ -1,6 +1,6 @@
+use indexmap::IndexMap;
 use rusqlite::{Connection, named_params, NO_PARAMS};
 use rusqlite::types::ValueRef;
-use std::collections::HashMap;
 use std::str::from_utf8;
 
 fn main() {
@@ -47,9 +47,9 @@ fn main() {
         let header: Vec<_> = stmt.column_names().iter().map(|c| String::from(*c)).collect();
         let mut rows = stmt.query(NO_PARAMS).unwrap();
         // For ease of use to convert to JSON, as array of objects
-        let mut table_representation: Vec<HashMap<&str, String>> = Vec::new();
+        let mut table_representation: Vec<IndexMap<&str, String>> = Vec::new();
         while let Ok(Some(sql_row)) = rows.next() {
-            let mut hashmap = HashMap::new();
+            let mut hashmap = IndexMap::new();
             for i in 0..column_count {
                 let value_ref = sql_row.get_raw(i);
                 let cell = match value_ref {
@@ -63,7 +63,8 @@ fn main() {
             }
             table_representation.push(hashmap);
         }
-        println!("{:?}", table_representation);
+        let out = printer::prettytable(&table_representation, &header);
+        println!("{}", out);
     }
 }
 
@@ -84,6 +85,7 @@ fn column_partitioner<'a, I>(clap_values: I) -> (Vec<&'a str>, Vec<&'a str>)
 }
 
 mod cli;
+mod printer;
 mod table_data;
 
 #[cfg(test)]
