@@ -1,4 +1,6 @@
 use rusqlite::{Connection, named_params, NO_PARAMS};
+use rusqlite::types::ValueRef;
+use std::str::from_utf8;
 
 fn main() {
     let matches = cli::app().get_matches();
@@ -32,6 +34,31 @@ fn main() {
             column_params = column_params.join(", "),
         );
         conn.execute(&script, column_data).unwrap();
+    } else if let Some(matches) = matches.subcommand_matches("list") {
+        let table_name = matches.value_of("list name").unwrap();
+        let script = format!(
+            "SELECT * FROM {table_name}",
+            table_name = table_name,
+        );
+
+        let mut stmt = conn.prepare(&script).unwrap();
+        let column_count = stmt.column_count();
+        let column_names = stmt.column_names();
+        println!("{}", column_names.join(", "));
+        let mut rows = stmt.query(NO_PARAMS).unwrap();
+        while let Ok(Some(row)) = rows.next() {
+            for i in 0..column_count {
+                let value_ref = row.get_raw(i);
+                match value_ref {
+                    ValueRef::Null => print!("<NULL>, "),
+                    ValueRef::Integer(i) => print!("{}, ", i),
+                    ValueRef::Real(r) => print!("{}, ", r),
+                    ValueRef::Text(utf8) => print!("{}, ", from_utf8(utf8).unwrap()),
+                    ValueRef::Blob(utf8) => print!("{}, ", from_utf8(utf8).unwrap()),
+                }
+            }
+            println!();
+        }
     }
 }
 

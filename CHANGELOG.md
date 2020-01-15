@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased](https://github.com/spenserblack/favlist/compare/v0.1.0...master)
+### Added
+- Print values with `favlist list`
 
 ## 0.1.0 2020/01/14
 ### Added
