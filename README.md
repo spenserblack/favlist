@@ -15,6 +15,7 @@ favlist list Movies -f Title Curse --filter Year 2006 --yaml
 - Create a new list with `favlist new`
 - Delete a list with `favlist rem`
 - Add a new row to the list with `favlist add`
+- Print values of list with `favlist list`
 
 # Build
 ## Dependencies
