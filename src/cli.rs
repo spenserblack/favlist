@@ -62,7 +62,6 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
                 .help("Column and data to be filtered on")
                 .short("f")
                 .long("filter")
-                .required(true)
                 .number_of_values(2)
                 .value_names(&["column", "value"])
                 .multiple(true))
