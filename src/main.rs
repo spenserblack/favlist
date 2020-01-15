@@ -65,6 +65,8 @@ fn main() {
         }
         let out = if matches.is_present("json") {
             printer::json(&table_representation)
+        } else if matches.is_present("yaml") {
+            printer::yaml(&table_representation)
         } else {
             printer::prettytable(&table_representation, &header)
         };

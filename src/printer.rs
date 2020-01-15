@@ -17,3 +17,7 @@ pub fn prettytable(table: &Vec<IndexMap<&str, String>>, header: &Vec<String>) ->
 pub fn json(table: &Vec<IndexMap<&str, String>>) -> String {
     serde_json::to_string_pretty(&table).unwrap()
 }
+
+pub fn yaml(table: &Vec<IndexMap<&str, String>>) -> String {
+    serde_yaml::to_string(&table).unwrap()
+}
