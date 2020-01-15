@@ -63,7 +63,11 @@ fn main() {
             }
             table_representation.push(hashmap);
         }
-        let out = printer::prettytable(&table_representation, &header);
+        let out = if matches.is_present("json") {
+            printer::json(&table_representation)
+        } else {
+            printer::prettytable(&table_representation, &header)
+        };
         println!("{}", out);
     }
 }
