@@ -37,15 +37,18 @@ fn main() {
         conn.execute(&script, column_data).unwrap();
     } else if let Some(matches) = matches.subcommand_matches("list") {
         let table_name = matches.value_of("list name").unwrap();
-        let script = format!(
-            "SELECT * FROM {table_name}",
-            table_name = table_name,
-        );
+        let mut stmt;
+        let mut rows = if let Some(filters) = matches.values_of("filters") {
+            let (filter_names, filter_values) = column_partitioner(filters);
+            let script = query_builder::List::new(table_name, Some(filter_names)).to_string();
+            stmt = conn.prepare(&script).unwrap();
+            stmt.query(filter_values).unwrap()
+        } else {
+            let script = query_builder::List::new(table_name, None).to_string();
+            stmt = conn.prepare(&script).unwrap();
+            stmt.query(NO_PARAMS).unwrap()
+        };
 
-        let mut stmt = conn.prepare(&script).unwrap();
-        let column_count = stmt.column_count();
-        // let header: Vec<_> = stmt.column_names().iter().map(|c| String::from(*c)).collect();
-        let mut rows = stmt.query(NO_PARAMS).unwrap();
         // For ease of use to convert to JSON, as array of objects
         let out = if matches.is_present("json") {
             printer::json(&mut rows)
@@ -76,6 +79,7 @@ fn column_partitioner<'a, I>(clap_values: I) -> (Vec<&'a str>, Vec<&'a str>)
 
 mod cli;
 mod printer;
+mod query_builder;
 mod table_data;
 
 #[cfg(test)]
