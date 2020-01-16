@@ -1,5 +1,6 @@
 # favlist
 [![Build Status](https://travis-ci.com/spenserblack/favlist.svg?branch=master)](https://travis-ci.com/spenserblack/favlist)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=spenserblack/favlist)](https://dependabot.com)
 
 A tool to make lists of my favorite things
 
