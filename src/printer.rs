@@ -41,7 +41,6 @@ pub fn json(rows: &mut Rows) -> String {
         let row = (0..column_count)
             .map(|i| (header[i].as_str(), row.get_raw(i)))
             .map(|(k, v)| {
-                use ValueRef::*;
                 let v = match v {
                     ValueRef::Null => Value::Null,
                     ValueRef::Integer(i) => Value::from(i),
@@ -66,7 +65,6 @@ pub fn yaml(rows: &mut Rows) -> String {
         let row = (0..column_count)
             .map(|i| (header[i].as_str(), row.get_raw(i)))
             .map(|(k, v)| {
-                use ValueRef::*;
                 let v = match v {
                     ValueRef::Null => Value::Null,
                     ValueRef::Integer(i) => Value::from(i),
