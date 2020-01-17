@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased](https://github.com/spenserblack/favlist/compare/v0.2.0...master)
+### Added
+- Remove values with `favlist sub`
 
 ## [0.2.0] 2020/01/16
 ### Added

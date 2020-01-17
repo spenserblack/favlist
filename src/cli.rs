@@ -42,6 +42,21 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
             .number_of_values(2)
             .value_names(&["column", "data"])
             .multiple(true));
+    let subcommand_sub = SubCommand::with_name("sub")
+        .about("Removes an entry from list")
+        .arg(Arg::with_name("list name")
+            .help("The list to be modified")
+            .required(true)
+            .index(1))
+        .arg(Arg::with_name("row ID")
+            .help("The row to be removed"))
+        .arg(Arg::with_name("filters")
+            .help("Column and data to be filtered on")
+            .short("f")
+            .long("filter")
+            .number_of_values(2)
+            .value_names(&["column", "value"])
+            .multiple(true));
     let subcommand_list = SubCommand::with_name("list")
         .about("Displays the data in a list")
         .arg(Arg::with_name("list name")
@@ -78,6 +93,7 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
         .subcommand(subcommand_new)
         .subcommand(subcommand_rem)
         .subcommand(subcommand_add)
+        .subcommand(subcommand_sub)
         .subcommand(subcommand_list);
 
     app

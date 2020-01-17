@@ -1,8 +1,22 @@
 use std::fmt::{self, Display};
 
+pub struct Sub<'a> {
+    table_name: &'a str,
+    filter_names: Vec<&'a str>,
+}
+
 pub struct List<'a> {
     table_name: &'a str,
     filter_names: Option<Vec<&'a str>>,
+}
+
+impl<'a> Sub<'a> {
+    pub fn new(table_name: &'a str, filter_names: Vec<&'a str>) -> Self {
+        Sub {
+            table_name,
+            filter_names,
+        }
+    }
 }
 
 impl<'a> List<'a> {
@@ -11,6 +25,27 @@ impl<'a> List<'a> {
             table_name,
             filter_names,
         }
+    }
+}
+
+impl<'a> Display for Sub<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "DELETE FROM {table_name}\nWHERE ", table_name = self.table_name)?;
+        let params: Vec<_> = (1..=self.filter_names.len()).map(|n| format!("?{}", n)).collect();
+        let filters = self.filter_names
+            .iter()
+            .zip(params.iter())
+            .map(|(filter, param)| {
+                format!(
+                    "{filter} LIKE '%' || {param} || '%'",
+                    filter = filter,
+                    param = param,
+                )
+            })
+            .collect::<Vec<_>>()
+            .join("\n  AND ");
+        write!(f, "{}", filters)?;
+        Ok(())
     }
 }
 
@@ -43,14 +78,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn no_filter() {
+    fn list_no_filter() {
         let list = List::new("Movies", None);
         let expected = "SELECT * FROM Movies";
         assert_eq!(expected, list.to_string());
     }
 
     #[test]
-    fn filters() {
+    fn list_filters() {
         let list = List::new("Movies", Some(vec![
             "Name",
             "Year",
@@ -60,5 +95,15 @@ SELECT * FROM Movies
 WHERE Name LIKE '%' || ?1 || '%'
   AND Year LIKE '%' || ?2 || '%'";
         assert_eq!(expected, list.to_string());
+    }
+
+    #[test]
+    fn sub_filters() {
+        let sub = Sub::new("Movies", vec!["Name", "Year",]);
+        let expected = "\
+DELETE FROM Movies
+WHERE Name LIKE '%' || ?1 || '%'
+  AND Year LIKE '%' || ?2 || '%'";
+        assert_eq!(expected, sub.to_string());
     }
 }
