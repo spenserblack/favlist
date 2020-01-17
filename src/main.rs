@@ -1,6 +1,7 @@
 use indexmap::IndexMap;
 use rusqlite::{Connection, params, NO_PARAMS};
 use rusqlite::types::ValueRef;
+use std::io::{self, Write};
 use std::str::from_utf8;
 
 fn main() {
@@ -38,12 +39,23 @@ fn main() {
     } else if let Some(matches) = matches.subcommand_matches("sub") {
         let table_name = matches.value_of("list name").unwrap();
 
+        let id: String;
         let (filter_names, filter_values) = if let Some(row_id) = matches.value_of("row ID") {
             (vec!["id"], vec![row_id])
         } else if let Some(filters) = matches.values_of("filters") {
             column_partitioner(filters)
         } else {
-            (vec!["id"], unimplemented!("Prompt for Row ID after showing options"))
+            id = {
+                let mut stmt = conn.prepare(&query_builder::List::new(table_name, None).to_string()).unwrap();
+                let pretty_table = printer::prettytable(&mut stmt.query(NO_PARAMS).unwrap());
+                println!("{}", pretty_table);
+                print!("Enter the ID of the row to remove> ");
+                io::stdout().flush().unwrap();
+                let mut input = String::new();
+                io::stdin().read_line(&mut input).unwrap();
+                input
+            };
+            (vec!["id"], vec![id.as_str()])
         };
 
         let script = query_builder::Sub::new(table_name, filter_names).to_string();
