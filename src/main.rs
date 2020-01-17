@@ -58,6 +58,8 @@ fn main() {
             printer::prettytable(&mut rows)
         };
         println!("{}", out);
+    } else {
+        unimplemented!("Launch a UI when no subcommand supplied");
     }
 }
 
