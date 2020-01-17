@@ -1,5 +1,5 @@
 use indexmap::IndexMap;
-use rusqlite::{Connection, named_params, NO_PARAMS};
+use rusqlite::{Connection, params, NO_PARAMS};
 use rusqlite::types::ValueRef;
 use std::str::from_utf8;
 
@@ -35,6 +35,16 @@ fn main() {
             column_params = column_params.join(", "),
         );
         conn.execute(&script, column_data).unwrap();
+    } else if let Some(matches) = matches.subcommand_matches("sub") {
+        let table_name = matches.value_of("list name").unwrap();
+        let row_id = matches.value_of("row ID").unwrap_or_else(|| {
+            unimplemented!("Prompt for Row ID after showing options")
+        });
+        let script = format!(
+            "DELETE FROM {table_name} WHERE id = ?",
+            table_name = table_name,
+        );
+        conn.execute(&script, params![row_id]).unwrap();
     } else if let Some(matches) = matches.subcommand_matches("list") {
         let table_name = matches.value_of("list name").unwrap();
         let mut stmt;
