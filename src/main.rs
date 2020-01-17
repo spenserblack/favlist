@@ -1,8 +1,5 @@
-use indexmap::IndexMap;
-use rusqlite::{Connection, params, NO_PARAMS};
-use rusqlite::types::ValueRef;
+use rusqlite::{Connection, NO_PARAMS};
 use std::io::{self, Write};
-use std::str::from_utf8;
 
 fn main() {
     let matches = cli::app().get_matches();
