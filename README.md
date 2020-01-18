@@ -4,7 +4,7 @@
 
 A tool to make lists of my favorite things
 
-# (Planned) Usage
+# Usage
 ```bash
 # create a new list of movies with an important (not-null) title and an integer year
 favlist new Movies ~Title Year@int
