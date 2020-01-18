@@ -37,3 +37,21 @@ jobs:
           asset_path: ./target/release/favlist
           asset_name: ubuntu-latest-favlist
           asset_content_type: application/x-sharedlib
+  release-asset-windows:
+    name: Windows Release Asset
+    runs-on: windows-latest
+    needs: [make-release]
+    steps:
+      - name: Build on Windows
+        id: build-windows
+        run: cargo build --release
+      - name: Upload Windows Asset
+        id: upload-windows
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.make-release.create-release.outputs.upload_url }}
+          asset_path: ./target/release/favlist.exe
+          asset_name: windows-latest-favlist.exe
+          asset_content_type: application/x-msdownload
