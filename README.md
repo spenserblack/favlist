@@ -22,7 +22,10 @@ favlist sub Movies 1
 - Print values of list with `favlist list`
 
 # Build
-## Dependencies
 ```bash
-apt install libsqlite3-dev
+cargo build --release # Executable will be in ./target/release
 ```
+
+## Dependencies
+### Linux
+- libsqlite3-dev
