@@ -1,0 +1,39 @@
+name: Create Release
+
+on:
+  push:
+    tags: ['v*']
+jobs:
+  make-release:
+    name: Make Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v1
+    - name: Create Release
+      id: create-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with: 
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: true
+  release-asset-linux:
+    name: Linux Release Asset
+    runs-on: ubuntu-latest
+    needs: [make-release]
+    steps:
+      - name: Build on Linux
+        id: build-linux
+        run: cargo build --release
+      - name: Upload Linux Asset
+        id: upload-linux
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.make-release.create-release.outputs.upload_url }}
+          asset_path: ./target/release/favlist
+          asset_name: ubuntu-latest-favlist
+          asset_content_type: application/x-sharedlib
