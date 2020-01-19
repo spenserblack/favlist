@@ -23,7 +23,11 @@ favlist sub Movies 1
 
 # Build
 ```bash
+# Just to build
 cargo build --release # Executable will be in ./target/release
+
+# Build and install
+cargo install --path .
 ```
 
 ## Dependencies
