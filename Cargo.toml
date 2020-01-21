@@ -9,7 +9,6 @@ readme = "README.md"
 keywords = ["list", "sqlite"]
 categories = ["command-line-utilities"]
 repository = "https://github.com/spenserblack/favlist"
-publish = false # You should at least look at this file before you publish
 exclude = [".travis.yml", ".editorconfig", ".github/*"]
 
 [dependencies]
