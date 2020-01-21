@@ -1,4 +1,6 @@
 # favlist
+[![Crates.io](https://img.shields.io/crates/v/favlist)](https://crates.io/crates/favlist/)
+![Crates.io](https://img.shields.io/crates/d/favlist)
 [![Build Status](https://travis-ci.com/spenserblack/favlist.svg?branch=master)](https://travis-ci.com/spenserblack/favlist)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=spenserblack/favlist)](https://dependabot.com)
 
