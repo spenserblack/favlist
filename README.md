@@ -12,6 +12,8 @@ favlist new Movies ~Title Year@int
 favlist add Movies -c Title "The Curse of the Cursed Curse" -c Year 2006
 # list movies with "Curse" in the title made in 2006 and print in YAML format
 favlist list Movies -f Title Curse --filter Year 2006 --yaml
+# Change the Year in row 1 of Movies
+favlist edit Movies 1 -c Year 2005
 # Remove row 1 from Movies
 favlist sub Movies 1
 ```
@@ -19,6 +21,7 @@ favlist sub Movies 1
 - Delete a list with `favlist rem`
 - Add a new row to the list with `favlist add`
 - Subtract a row from the list with `favlist sub`
+- Edit values in a row with `favlist edit`
 - Print values of list with `favlist list`
 
 # Build
