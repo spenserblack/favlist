@@ -57,6 +57,24 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
             .number_of_values(2)
             .value_names(&["column", "value"])
             .multiple(true));
+    let subcommand_edit = SubCommand::with_name("edit")
+        .about("Edits a row in a list")
+        .arg(Arg::with_name("list name")
+            .help("The list to be modified")
+            .required(true)
+            .index(1))
+        .arg(Arg::with_name("row ID")
+            .help("The row to be modified")
+            .required(true)
+            .index(2))
+        .arg(Arg::with_name("columns")
+            .help("Column and data to be inserted in that column")
+            .short("c")
+            .long("column")
+            .required(true)
+            .number_of_values(2)
+            .value_names(&["column", "data"])
+            .multiple(true));
     let subcommand_list = SubCommand::with_name("list")
         .about("Displays the data in a list")
         .arg(Arg::with_name("list name")
@@ -94,6 +112,7 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
         .subcommand(subcommand_rem)
         .subcommand(subcommand_add)
         .subcommand(subcommand_sub)
+        .subcommand(subcommand_edit)
         .subcommand(subcommand_list);
 
     app
