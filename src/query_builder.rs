@@ -70,6 +70,21 @@ impl<'a> Display for Sub<'a> {
 impl<'a> Display for Edit<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "UPDATE {table_name}\n", table_name = self.table_name)?;
+        let params: Vec<_> = (1..=self.column_names.len()).map(|n| format!("?{}", n)).collect();
+        let columns = self.column_names
+            .iter()
+            .zip(params.iter())
+            .map(|(column, param)| {
+                format!(
+                    "{column} = {param}",
+                    column = column,
+                    param = param,
+                )
+            })
+            .collect::<Vec<_>>()
+            .join(",\n  ");
+        write!(f, "SET {}\n", columns)?;
+        write!(f, "WHERE id = {id}", id = self.id)?;
         Ok(())
     }
 }
