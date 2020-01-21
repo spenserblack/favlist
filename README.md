@@ -26,13 +26,10 @@ favlist sub Movies 1
 - Edit values in a row with `favlist edit`
 - Print values of list with `favlist list`
 
-# Build
+# Install
 ```bash
-# Just to build
-cargo build --release # Executable will be in ./target/release
-
-# Build and install
-cargo install --path .
+# Latest released version
+cargo install favlist
 ```
 
 ## Dependencies
