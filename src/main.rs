@@ -57,6 +57,12 @@ fn main() {
 
         let script = query_builder::Sub::new(table_name, filter_names).to_string();
         conn.execute(&script, filter_values).unwrap();
+    } else if let Some(matches) = matches.subcommand_matches("edit") {
+        let table_name = matches.value_of("list name").unwrap();
+        let row_id = matches.value_of("row ID").unwrap();
+        let (column_names, column_values) = column_partitioner(matches.values_of("columns").unwrap());
+        let script = query_builder::Edit::new(table_name, row_id, column_names).to_string();
+        conn.execute(&script, column_values).unwrap();
     } else if let Some(matches) = matches.subcommand_matches("list") {
         let table_name = matches.value_of("list name").unwrap();
         let mut stmt;
