@@ -8,6 +8,7 @@ jobs:
     name: Linux Release Asset
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Build on Linux
         id: build-linux
         run: cargo build --release
@@ -21,6 +22,7 @@ jobs:
     name: Windows Release Asset
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Build on Windows
         id: build-windows
         run: cargo build --release
