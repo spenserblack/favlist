@@ -9,7 +9,7 @@ readme = "README.md"
 keywords = ["list", "sqlite"]
 categories = ["command-line-utilities"]
 repository = "https://github.com/spenserblack/favlist"
-exclude = [".travis.yml", ".editorconfig", ".github/*"]
+exclude = [".travis.yml", ".editorconfig", ".github/*", "CHANGELOG.md"]
 
 [dependencies]
 clap = "2.33"
