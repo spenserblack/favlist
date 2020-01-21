@@ -5,6 +5,14 @@ pub struct Sub<'a> {
     filter_names: Vec<&'a str>,
 }
 
+pub struct Edit<'a> {
+    table_name: &'a str,
+    /// This *should* always be an int, but, for now, will just let `rustqlite`
+    /// handle an invalid value.
+    id: &'a str,
+    column_names: Vec<&'a str>,
+}
+
 pub struct List<'a> {
     table_name: &'a str,
     filter_names: Option<Vec<&'a str>>,
@@ -15,6 +23,16 @@ impl<'a> Sub<'a> {
         Sub {
             table_name,
             filter_names,
+        }
+    }
+}
+
+impl<'a> Edit<'a> {
+    pub fn new(table_name: &'a str, id: &'a str, column_names: Vec<&'a str>) -> Self {
+        Edit {
+            table_name,
+            id,
+            column_names,
         }
     }
 }
@@ -45,6 +63,13 @@ impl<'a> Display for Sub<'a> {
             .collect::<Vec<_>>()
             .join("\n  AND ");
         write!(f, "{}", filters)?;
+        Ok(())
+    }
+}
+
+impl<'a> Display for Edit<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "UPDATE {table_name}\n", table_name = self.table_name)?;
         Ok(())
     }
 }
@@ -105,5 +130,16 @@ DELETE FROM Movies
 WHERE Name LIKE '%' || ?1 || '%'
   AND Year LIKE '%' || ?2 || '%'";
         assert_eq!(expected, sub.to_string());
+    }
+
+    #[test]
+    fn edit() {
+        let edit = Edit::new("Movies", "1", vec!["Name", "Year",]);
+        let expected = "\
+UPDATE Movies
+SET Name = ?1,
+  Year = ?2
+WHERE id = 1";
+        assert_eq!(expected, edit.to_string());
     }
 }
