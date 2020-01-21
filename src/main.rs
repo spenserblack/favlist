@@ -18,7 +18,8 @@ fn main() {
         conn.execute(
             &format!("DROP TABLE {table_name}", table_name = table_name),
             NO_PARAMS,
-        ).unwrap();
+        )
+        .unwrap();
     } else if let Some(matches) = matches.subcommand_matches("add") {
         let (column_names, column_data) = if let Some(columns) = matches.values_of("columns") {
             column_partitioner(columns)
@@ -43,7 +44,9 @@ fn main() {
             column_partitioner(filters)
         } else {
             id = {
-                let mut stmt = conn.prepare(&query_builder::List::new(table_name, None).to_string()).unwrap();
+                let mut stmt = conn
+                    .prepare(&query_builder::List::new(table_name, None).to_string())
+                    .unwrap();
                 let pretty_table = printer::prettytable(&mut stmt.query(NO_PARAMS).unwrap());
                 println!("{}", pretty_table);
                 print!("Enter the ID of the row to remove> ");
@@ -60,7 +63,8 @@ fn main() {
     } else if let Some(matches) = matches.subcommand_matches("edit") {
         let table_name = matches.value_of("list name").unwrap();
         let row_id = matches.value_of("row ID").unwrap();
-        let (column_names, column_values) = column_partitioner(matches.values_of("columns").unwrap());
+        let (column_names, column_values) =
+            column_partitioner(matches.values_of("columns").unwrap());
         let script = query_builder::Edit::new(table_name, row_id, column_names).to_string();
         conn.execute(&script, column_values).unwrap();
     } else if let Some(matches) = matches.subcommand_matches("list") {
@@ -95,11 +99,11 @@ fn main() {
 /// separates them from the format `[name, value, name, value]` into a `Vec` of
 /// names and a `Vec` of values
 fn column_partitioner<'a, I>(clap_values: I) -> (Vec<&'a str>, Vec<&'a str>)
-    where I: Iterator<Item = &'a str>
-    {
-    let (column_names, column_values): (Vec<_>, Vec<_>) = clap_values
-        .enumerate()
-        .partition(|(i, _v)| i % 2 == 0);
+where
+    I: Iterator<Item = &'a str>,
+{
+    let (column_names, column_values): (Vec<_>, Vec<_>) =
+        clap_values.enumerate().partition(|(i, _v)| i % 2 == 0);
 
     (
         column_names.iter().map(|(_i, v)| v.to_owned()).collect(),
@@ -118,12 +122,7 @@ mod tests {
 
     #[test]
     fn column_partitioner_test() {
-        let values = vec![
-            "Works",
-            "Hopefully",
-            "Test Passed",
-            "Yes",
-        ].into_iter();
+        let values = vec!["Works", "Hopefully", "Test Passed", "Yes"].into_iter();
         let (column_names, column_data) = column_partitioner(values);
         assert_eq!(vec!["Works", "Test Passed"], column_names);
         assert_eq!(vec!["Hopefully", "Yes"], column_data);

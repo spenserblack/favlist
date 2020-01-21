@@ -48,9 +48,16 @@ impl<'a> List<'a> {
 
 impl<'a> Display for Sub<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "DELETE FROM {table_name}\nWHERE ", table_name = self.table_name)?;
-        let params: Vec<_> = (1..=self.filter_names.len()).map(|n| format!("?{}", n)).collect();
-        let filters = self.filter_names
+        write!(
+            f,
+            "DELETE FROM {table_name}\nWHERE ",
+            table_name = self.table_name
+        )?;
+        let params: Vec<_> = (1..=self.filter_names.len())
+            .map(|n| format!("?{}", n))
+            .collect();
+        let filters = self
+            .filter_names
             .iter()
             .zip(params.iter())
             .map(|(filter, param)| {
@@ -70,17 +77,14 @@ impl<'a> Display for Sub<'a> {
 impl<'a> Display for Edit<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "UPDATE {table_name}\n", table_name = self.table_name)?;
-        let params: Vec<_> = (1..=self.column_names.len()).map(|n| format!("?{}", n)).collect();
-        let columns = self.column_names
+        let params: Vec<_> = (1..=self.column_names.len())
+            .map(|n| format!("?{}", n))
+            .collect();
+        let columns = self
+            .column_names
             .iter()
             .zip(params.iter())
-            .map(|(column, param)| {
-                format!(
-                    "{column} = {param}",
-                    column = column,
-                    param = param,
-                )
-            })
+            .map(|(column, param)| format!("{column} = {param}", column = column, param = param,))
             .collect::<Vec<_>>()
             .join(",\n  ");
         write!(f, "SET {}\n", columns)?;
@@ -91,9 +95,15 @@ impl<'a> Display for Edit<'a> {
 
 impl<'a> Display for List<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "SELECT * FROM {table_name}", table_name = self.table_name)?;
+        write!(
+            f,
+            "SELECT * FROM {table_name}",
+            table_name = self.table_name
+        )?;
         if let Some(filter_names) = &self.filter_names {
-            let params: Vec<_> = (1..=filter_names.len()).map(|n| format!("?{}", n)).collect();
+            let params: Vec<_> = (1..=filter_names.len())
+                .map(|n| format!("?{}", n))
+                .collect();
             write!(f, "\nWHERE ")?;
             let filters = filter_names
                 .iter()
@@ -126,10 +136,7 @@ mod tests {
 
     #[test]
     fn list_filters() {
-        let list = List::new("Movies", Some(vec![
-            "Name",
-            "Year",
-        ]));
+        let list = List::new("Movies", Some(vec!["Name", "Year"]));
         let expected = "\
 SELECT * FROM Movies
 WHERE Name LIKE '%' || ?1 || '%'
@@ -139,7 +146,7 @@ WHERE Name LIKE '%' || ?1 || '%'
 
     #[test]
     fn sub_filters() {
-        let sub = Sub::new("Movies", vec!["Name", "Year",]);
+        let sub = Sub::new("Movies", vec!["Name", "Year"]);
         let expected = "\
 DELETE FROM Movies
 WHERE Name LIKE '%' || ?1 || '%'
@@ -149,7 +156,7 @@ WHERE Name LIKE '%' || ?1 || '%'
 
     #[test]
     fn edit() {
-        let edit = Edit::new("Movies", "1", vec!["Name", "Year",]);
+        let edit = Edit::new("Movies", "1", vec!["Name", "Year"]);
         let expected = "\
 UPDATE Movies
 SET Name = ?1,

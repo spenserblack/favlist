@@ -1,14 +1,20 @@
 use indexmap::IndexMap;
-use prettytable::{Table, Row, Cell};
-use rusqlite::Rows;
+use prettytable::{Cell, Row, Table};
 use rusqlite::types::ValueRef;
+use rusqlite::Rows;
 use std::str::from_utf8;
 
 /// `header` is redundant data, but useful in case of empty table
 pub fn prettytable(rows: &mut Rows) -> String {
     let mut prettytable = Table::new();
     // let header = Row::new(header.iter().map(|c| Cell::new(c)).collect());
-    let header = Row::new(rows.column_names().unwrap().iter().map(|c| Cell::new(c)).collect());
+    let header = Row::new(
+        rows.column_names()
+            .unwrap()
+            .iter()
+            .map(|c| Cell::new(c))
+            .collect(),
+    );
     let column_count = rows.column_count().unwrap();
     prettytable.add_row(header);
     while let Ok(Some(row)) = rows.next() {
@@ -34,7 +40,12 @@ pub fn prettytable(rows: &mut Rows) -> String {
 
 pub fn json(rows: &mut Rows) -> String {
     use serde_json::Value;
-    let header: Vec<_> = rows.column_names().unwrap().iter().map(|c| String::from(*c)).collect();
+    let header: Vec<_> = rows
+        .column_names()
+        .unwrap()
+        .iter()
+        .map(|c| String::from(*c))
+        .collect();
     let column_count = rows.column_count().unwrap();
     let mut table: Vec<IndexMap<_, _>> = Vec::new();
     while let Ok(Some(row)) = rows.next() {
@@ -58,7 +69,12 @@ pub fn json(rows: &mut Rows) -> String {
 
 pub fn yaml(rows: &mut Rows) -> String {
     use serde_yaml::Value;
-    let header: Vec<_> = rows.column_names().unwrap().iter().map(|c| String::from(*c)).collect();
+    let header: Vec<_> = rows
+        .column_names()
+        .unwrap()
+        .iter()
+        .map(|c| String::from(*c))
+        .collect();
     let column_count = rows.column_count().unwrap();
     let mut table: Vec<IndexMap<_, _>> = Vec::new();
     while let Ok(Some(row)) = rows.next() {

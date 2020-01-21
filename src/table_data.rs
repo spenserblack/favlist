@@ -34,10 +34,7 @@ impl Table {
     pub fn new<'a>(name: &str, columns: Values<'a>) -> Self {
         let name = name.into();
         let columns = columns.map(|s| s.parse().unwrap()).collect();
-        Table {
-            name,
-            columns,
-        }
+        Table { name, columns }
     }
 
     pub fn declaration(&self) -> String {
@@ -47,18 +44,19 @@ id INTEGER PRIMARY KEY,
 {columns}
 )\n",
             table_name = self.name,
-            columns = self.columns.iter().map(|c| c.declaration()).collect::<Vec<_>>().join(",\n"),
+            columns = self
+                .columns
+                .iter()
+                .map(|c| c.declaration())
+                .collect::<Vec<_>>()
+                .join(",\n"),
         )
     }
 }
 
 impl Column {
     fn declaration(&self) -> String {
-        let declaration = format!(
-            "{} {}",
-            self.name,
-            self.data_type,
-        );
+        let declaration = format!("{} {}", self.name, self.data_type,);
         if self.not_null {
             format!("{} NOT NULL", declaration)
         } else {
@@ -176,9 +174,6 @@ Year INTEGER
             columns: vec!["~Title".parse().unwrap(), "Year@int".parse().unwrap()],
         };
 
-        assert_eq!(
-            expected,
-            table.declaration(),
-        );
+        assert_eq!(expected, table.declaration(),);
     }
 }
