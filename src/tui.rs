@@ -38,8 +38,10 @@ pub fn start_ui(conn: Connection) {
     let default_style = Style::default().fg(Color::Yellow);
     let selected_style = Style::default().fg(Color::Black).bg(Color::Yellow);
 
+    let mut tab_tracker = TabTracker { current_position: 0, length: 0 };
     'main: loop {
         let table_names = data::available_tables(&conn);
+        tab_tracker.length = table_names.len();
         terminal
             .draw(|mut f| {
                 let size = f.size();
@@ -57,6 +59,7 @@ pub fn start_ui(conn: Connection) {
                 // Table Tabs {{{
                 Tabs::default()
                     // .block(Block::default().title("lists"))
+                    .select(tab_tracker.current_position)
                     .titles(&table_names)
                     .style(default_style)
                     .highlight_style(selected_style)
@@ -68,6 +71,12 @@ pub fn start_ui(conn: Connection) {
         match event::read().unwrap() {
             Event::Key(key_event) => match key_event.code {
                 KeyCode::Esc => break 'main,
+                KeyCode::Char('<') => {
+                    tab_tracker.next_back();
+                }
+                KeyCode::Char('>') => {
+                    tab_tracker.next();
+                }
                 _ => {}
             },
             _ => {}
@@ -88,3 +97,58 @@ pub fn start_ui<T>(_conn: T) {
 }
 
 mod data;
+
+struct TabTracker {
+    current_position: usize,
+    /// Exclusive
+    length: usize,
+}
+
+impl Iterator for TabTracker {
+    type Item = usize;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.current_position += 1;
+        if self.current_position >= self.length {
+            self.current_position = 0;
+        }
+        Some(self.current_position)
+    }
+}
+
+impl DoubleEndedIterator for TabTracker {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        use std::cmp::max;
+        if self.current_position == 0 {
+            self.current_position = max(1, self.length); // In case length == 0
+        }
+        self.current_position -= 1;
+        Some(self.current_position)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+    mod tab_tracker {
+        use super::*;
+
+        #[test]
+        fn tab_tracker_overflow() {
+            let mut tracker = TabTracker { current_position: 4, length: 5 };
+            assert_eq!(Some(0), tracker.next());
+        }
+
+        #[test]
+        fn tab_tracker_underflow() {
+            let mut tracker = TabTracker { current_position: 0, length: 5 };
+            assert_eq!(Some(4), tracker.next_back());
+        }
+
+        #[test]
+        fn tab_tracker_underflow_with_0_length() {
+            let mut tracker = TabTracker { current_position: 0, length: 0 };
+            assert_eq!(Some(0), tracker.next_back());
+        }
+    }
+}
