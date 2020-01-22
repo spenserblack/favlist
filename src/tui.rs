@@ -9,7 +9,57 @@ favlist solely through the CLI.";
 
 #[cfg(feature = "favlist-tui")]
 pub fn start_ui(conn: Connection) {
-    unimplemented!("start the TUI");
+    use crossterm::{
+        event::{self, Event, KeyCode},
+        execute,
+        terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+    };
+    use std::io::{self, Write};
+    use tui::{
+        backend::CrosstermBackend,
+        layout::{Constraint, Direction, Layout},
+        style::{Color, Modifier, Style},
+        widgets::{Block, Borders, Widget},
+        Terminal,
+    };
+
+    enable_raw_mode().unwrap();
+
+    let mut stdout = io::stdout();
+    execute!(stdout, EnterAlternateScreen).unwrap();
+
+    let backend = CrosstermBackend::new(stdout);
+
+    let mut terminal = Terminal::new(backend).unwrap();
+    terminal.hide_cursor().unwrap();
+
+    terminal.clear().unwrap();
+
+    'main: loop {
+        terminal
+            .draw(|mut f| {
+                let size = f.size();
+                Block::default()
+                    .borders(Borders::ALL)
+                    .title("favlist")
+                    .render(&mut f, size);
+            })
+            .unwrap();
+
+        match event::read().unwrap() {
+            Event::Key(key_event) => match key_event.code {
+                KeyCode::Esc => break 'main,
+                _ => {}
+            },
+            _ => {}
+        }
+    }
+
+    // Cleanup {{{
+    disable_raw_mode().unwrap();
+    execute!(terminal.backend_mut(), LeaveAlternateScreen).unwrap();
+    terminal.show_cursor().unwrap();
+    // }}}
 }
 
 #[cfg(not(feature = "favlist-tui"))]
