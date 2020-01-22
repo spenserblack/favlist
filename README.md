@@ -18,6 +18,9 @@ favlist list Movies -f Title Curse --filter Year 2006 --yaml
 favlist edit Movies 1 -c Year 2005
 # Remove row 1 from Movies
 favlist sub Movies 1
+
+# Launch the TUI
+favlist
 ```
 - Create a new list with `favlist new`
 - Delete a list with `favlist rem`
@@ -30,6 +33,9 @@ favlist sub Movies 1
 ```bash
 # Latest released version
 cargo install favlist
+
+# Don't want the TUI feature?
+cargo install --no-default-features favlist
 ```
 
 ## Dependencies
