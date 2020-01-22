@@ -19,7 +19,7 @@ pub fn start_ui(conn: Connection) {
         backend::CrosstermBackend,
         layout::{Constraint, Direction, Layout},
         style::{Color, Modifier, Style},
-        widgets::{Block, Borders, Widget},
+        widgets::{Block, Borders, Tabs, Widget},
         Terminal,
     };
 
@@ -35,14 +35,33 @@ pub fn start_ui(conn: Connection) {
 
     terminal.clear().unwrap();
 
+    let default_style = Style::default().fg(Color::Yellow);
+    let selected_style = Style::default().fg(Color::Black).bg(Color::Yellow);
+
     'main: loop {
+        let table_names = data::available_tables(&conn);
         terminal
             .draw(|mut f| {
                 let size = f.size();
+                let chunks = Layout::default()
+                    .direction(Direction::Vertical)
+                    .margin(1)
+                    .constraints([Constraint::Length(3), Constraint::Percentage(80)].as_ref())
+                    .split(size);
+                // Surrounding block {{{
                 Block::default()
                     .borders(Borders::ALL)
                     .title("favlist")
                     .render(&mut f, size);
+                // }}}
+                // Table Tabs {{{
+                Tabs::default()
+                    // .block(Block::default().title("lists"))
+                    .titles(&table_names)
+                    .style(default_style)
+                    .highlight_style(selected_style)
+                    .render(&mut f, chunks[0]);
+                // }}}
             })
             .unwrap();
 
@@ -67,3 +86,5 @@ pub fn start_ui<T>(_conn: T) {
     eprintln!("{}", NO_TUI_ERROR);
     println!("Please run `favlist -h` to get help on how to use favlist.");
 }
+
+mod data;
