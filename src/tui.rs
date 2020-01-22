@@ -38,7 +38,7 @@ pub fn start_ui(conn: Connection) {
     let default_style = Style::default().fg(Color::Yellow);
     let selected_style = Style::default().fg(Color::Black).bg(Color::Yellow);
 
-    let mut tab_tracker = TabTracker { current_position: 0, length: 0 };
+    let mut tab_tracker = utils::TabTracker { current_position: 0, length: 0 };
     'main: loop {
         let table_names = data::available_tables(&conn);
         tab_tracker.length = table_names.len();
@@ -96,59 +96,64 @@ pub fn start_ui<T>(_conn: T) {
     println!("Please run `favlist -h` to get help on how to use favlist.");
 }
 
+#[cfg(feature = "favlist-tui")]
 mod data;
 
-struct TabTracker {
-    current_position: usize,
-    /// Exclusive
-    length: usize,
-}
-
-impl Iterator for TabTracker {
-    type Item = usize;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.current_position += 1;
-        if self.current_position >= self.length {
-            self.current_position = 0;
-        }
-        Some(self.current_position)
+#[cfg(feature = "favlist-tui")]
+mod utils {
+    pub struct TabTracker {
+        pub current_position: usize,
+        /// Exclusive
+        pub length: usize,
     }
-}
 
-impl DoubleEndedIterator for TabTracker {
-    fn next_back(&mut self) -> Option<Self::Item> {
-        use std::cmp::max;
-        if self.current_position == 0 {
-            self.current_position = max(1, self.length); // In case length == 0
+    impl Iterator for TabTracker {
+        type Item = usize;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            self.current_position += 1;
+            if self.current_position >= self.length {
+                self.current_position = 0;
+            }
+            Some(self.current_position)
         }
-        self.current_position -= 1;
-        Some(self.current_position)
     }
-}
 
-#[cfg(test)]
-mod tests {
-    pub use super::*;
-    mod tab_tracker {
-        use super::*;
-
-        #[test]
-        fn tab_tracker_overflow() {
-            let mut tracker = TabTracker { current_position: 4, length: 5 };
-            assert_eq!(Some(0), tracker.next());
+    impl DoubleEndedIterator for TabTracker {
+        fn next_back(&mut self) -> Option<Self::Item> {
+            use std::cmp::max;
+            if self.current_position == 0 {
+                // In case length == 0
+                self.current_position = max(1, self.length);
+            }
+            self.current_position -= 1;
+            Some(self.current_position)
         }
+    }
 
-        #[test]
-        fn tab_tracker_underflow() {
-            let mut tracker = TabTracker { current_position: 0, length: 5 };
-            assert_eq!(Some(4), tracker.next_back());
-        }
+    #[cfg(test)]
+    mod tests {
+        pub use super::*;
+        mod tab_tracker {
+            use super::*;
 
-        #[test]
-        fn tab_tracker_underflow_with_0_length() {
-            let mut tracker = TabTracker { current_position: 0, length: 0 };
-            assert_eq!(Some(0), tracker.next_back());
+            #[test]
+            fn tab_tracker_overflow() {
+                let mut tracker = TabTracker { current_position: 4, length: 5 };
+                assert_eq!(Some(0), tracker.next());
+            }
+
+            #[test]
+            fn tab_tracker_underflow() {
+                let mut tracker = TabTracker { current_position: 0, length: 5 };
+                assert_eq!(Some(4), tracker.next_back());
+            }
+
+            #[test]
+            fn tab_tracker_underflow_with_0_length() {
+                let mut tracker = TabTracker { current_position: 0, length: 0 };
+                assert_eq!(Some(0), tracker.next_back());
+            }
         }
     }
 }
