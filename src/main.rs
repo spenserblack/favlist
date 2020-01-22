@@ -1,5 +1,4 @@
 use rusqlite::{Connection, NO_PARAMS};
-use std::io::{self, Write};
 
 fn main() {
     let matches = cli::app().get_matches();
@@ -37,25 +36,12 @@ fn main() {
     } else if let Some(matches) = matches.subcommand_matches("sub") {
         let table_name = matches.value_of("list name").unwrap();
 
-        let id: String;
         let (filter_names, filter_values) = if let Some(row_id) = matches.value_of("row ID") {
             (vec!["id"], vec![row_id])
         } else if let Some(filters) = matches.values_of("filters") {
             column_partitioner(filters)
         } else {
-            id = {
-                let mut stmt = conn
-                    .prepare(&query_builder::List::new(table_name, None).to_string())
-                    .unwrap();
-                let pretty_table = printer::prettytable(&mut stmt.query(NO_PARAMS).unwrap());
-                println!("{}", pretty_table);
-                print!("Enter the ID of the row to remove> ");
-                io::stdout().flush().unwrap();
-                let mut input = String::new();
-                io::stdin().read_line(&mut input).unwrap();
-                input
-            };
-            (vec!["id"], vec![id.as_str()])
+            unreachable!();
         };
 
         let script = query_builder::Sub::new(table_name, filter_names).to_string();

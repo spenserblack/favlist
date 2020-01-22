@@ -58,7 +58,14 @@ pub fn app<'a, 'b>() -> App<'a, 'b> {
                 .required(true)
                 .index(1),
         )
-        .arg(Arg::with_name("row ID").help("The row to be removed"))
+        .arg(
+            Arg::with_name("row ID")
+                .help(
+                    r#"The row to be removed
+Required if "filters" not used"#,
+                )
+                .required_unless("filters"),
+        )
         .arg(
             Arg::with_name("filters")
                 .help("Column and data to be filtered on")
