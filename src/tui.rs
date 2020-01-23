@@ -1,6 +1,5 @@
 #[cfg(feature = "favlist-tui")]
 use rusqlite::{Connection, NO_PARAMS};
-#[cfg(feature = "favlist-tui")]
 
 #[cfg(not(feature = "favlist-tui"))]
 const NO_TUI_ERROR: &str = "\
