@@ -15,11 +15,12 @@ pub fn start_ui(conn: Connection) {
         terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     };
     use std::io::{self, Write};
+    use super::query_builder;
     use tui::{
         backend::CrosstermBackend,
         layout::{Constraint, Direction, Layout},
         style::{Color, Modifier, Style},
-        widgets::{Block, Borders, Tabs, Widget},
+        widgets::{Block, Borders, Row, Table, Tabs, Widget},
         Terminal,
     };
 
@@ -37,6 +38,7 @@ pub fn start_ui(conn: Connection) {
 
     let default_style = Style::default().fg(Color::Yellow);
     let selected_style = Style::default().fg(Color::Black).bg(Color::Yellow);
+    let header_style = default_style.modifier(Modifier::BOLD);
 
     let mut tab_tracker = utils::TabTracker { current_position: 0, length: 0 };
     'main: loop {
@@ -64,6 +66,33 @@ pub fn start_ui(conn: Connection) {
                     .style(default_style)
                     .highlight_style(selected_style)
                     .render(&mut f, chunks[0]);
+                // }}}
+                // Table definition {{{
+                // NOTE Highlighting specific row
+                // let rows = rows.into_iter().enumerate().map(|(i, item)| {
+                //     if i == 1 {
+                //         Row::StyledData(item.into_iter(), selected_style)
+                //     } else {
+                //         Row::StyledData(item.into_iter(), default_style)
+                //     }
+                // });
+                if let Some(table_name) = table_names.get(tab_tracker.current_position) {
+                    let mut stmt = conn.
+                        prepare(&query_builder::List::new(table_name, None).to_string())
+                        .unwrap();
+                    let header = stmt.column_names();
+                    let width = header.len();
+                    let widths: Vec<_> = (0..width).map(|_| {Constraint::Percentage((100 / width) as u16)}).collect();
+                    let rows = (0..1)
+                        .map(|_| {
+                            let items = (0..width).map(|i| {format!("placeholder {}", i)});
+                            Row::StyledData(items, default_style)
+                        });
+                    Table::new(header.into_iter(), rows)
+                        .widths(&widths)
+                        .header_style(header_style)
+                        .render(&mut f, chunks[1]);
+                }
                 // }}}
             })
             .unwrap();
