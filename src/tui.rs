@@ -1,5 +1,6 @@
 #[cfg(feature = "favlist-tui")]
-use rusqlite::Connection;
+use rusqlite::{Connection, NO_PARAMS};
+#[cfg(feature = "favlist-tui")]
 
 #[cfg(not(feature = "favlist-tui"))]
 const NO_TUI_ERROR: &str = "\
@@ -44,13 +45,19 @@ pub fn start_ui(conn: Connection) {
     'main: loop {
         let table_names = data::available_tables(&conn);
         tab_tracker.length = table_names.len();
+
+        let mut row_ids: Vec<u32> = Vec::new();
+
         terminal
             .draw(|mut f| {
                 let size = f.size();
                 let chunks = Layout::default()
                     .direction(Direction::Vertical)
                     .margin(1)
-                    .constraints([Constraint::Length(3), Constraint::Percentage(80)].as_ref())
+                    .constraints([
+                        Constraint::Length(3),
+                        Constraint::Percentage(80),
+                    ].as_ref())
                     .split(size);
                 // Surrounding block {{{
                 Block::default()
@@ -80,15 +87,30 @@ pub fn start_ui(conn: Connection) {
                     let mut stmt = conn.
                         prepare(&query_builder::List::new(table_name, None).to_string())
                         .unwrap();
-                    let header = stmt.column_names();
-                    let width = header.len();
+                    let header = stmt.column_names().into_iter().map(String::from).collect::<Vec<_>>().into_iter();
+                    let width = stmt.column_count();
                     let widths: Vec<_> = (0..width).map(|_| {Constraint::Percentage((100 / width) as u16)}).collect();
-                    let rows = (0..1)
-                        .map(|_| {
-                            let items = (0..width).map(|i| {format!("placeholder {}", i)});
-                            Row::StyledData(items, default_style)
-                        });
-                    Table::new(header.into_iter(), rows)
+                    let mut rows = stmt.query(NO_PARAMS).unwrap();
+                    let mut tui_rows = Vec::new();
+                    while let Ok(Some(row)) = rows.next() {
+                        row_ids.push(row.get_unwrap("id"));
+                        let row = (0..width)
+                            .map(|i| row.get_raw(i))
+                            .map(|v| {
+                                use rusqlite::types::ValueRef::*;
+                                use std::str::from_utf8;
+                                match v {
+                                    Null => "<NULL>".to_string(),
+                                    Integer(i) => i.to_string(),
+                                    Real(r) => r.to_string(),
+                                    Text(utf8) => from_utf8(utf8).unwrap().to_string(),
+                                    Blob(utf8) => from_utf8(utf8).unwrap().to_string(),
+                                }
+                            });
+                        let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), default_style);
+                        tui_rows.push(row);
+                    }
+                    Table::new(header.into_iter(), tui_rows.into_iter())
                         .widths(&widths)
                         .header_style(header_style)
                         .render(&mut f, chunks[1]);
