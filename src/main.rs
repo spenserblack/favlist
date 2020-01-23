@@ -77,7 +77,7 @@ fn main() {
         };
         println!("{}", out);
     } else {
-        unimplemented!("Launch a UI when no subcommand supplied");
+        tui::start_ui(conn);
     }
 }
 
@@ -101,6 +101,7 @@ mod cli;
 mod printer;
 mod query_builder;
 mod table_data;
+mod tui;
 
 #[cfg(test)]
 mod tests {
