@@ -16,6 +16,7 @@ exclude = [
     ".gitignore",
     "CHANGELOG.md",
 ]
+publish = false
 
 [features]
 default = ["favlist-tui"]
