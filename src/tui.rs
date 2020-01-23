@@ -87,14 +87,14 @@ pub fn start_ui(conn: Connection) {
                     let mut stmt = conn.
                         prepare(&query_builder::List::new(table_name, None).to_string())
                         .unwrap();
-                    let header = stmt.column_names().into_iter().map(String::from).collect::<Vec<_>>().into_iter();
+                    let header = stmt.column_names().into_iter().map(String::from).collect::<Vec<_>>().into_iter().skip(1);
                     let width = stmt.column_count();
-                    let widths: Vec<_> = (0..width).map(|_| {Constraint::Percentage((100 / width) as u16)}).collect();
+                    let widths: Vec<_> = (1..width).map(|_| {Constraint::Percentage((100 / width - 1) as u16)}).collect();
                     let mut rows = stmt.query(NO_PARAMS).unwrap();
                     let mut tui_rows = Vec::new();
                     while let Ok(Some(row)) = rows.next() {
                         row_ids.push(row.get_unwrap("id"));
-                        let row = (0..width)
+                        let row = (1..width)
                             .map(|i| row.get_raw(i))
                             .map(|v| {
                                 use rusqlite::types::ValueRef::*;
