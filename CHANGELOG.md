@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased](https://github.com/spenserblack/favlist/compare/v1.0.0...master)
+### Added
+- TUI
 ### Changed
 - Row ID to be required for `favlist sub` unless `--filter` is used
 
