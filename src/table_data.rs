@@ -116,6 +116,7 @@ impl FromStr for Column {
 mod tests {
     use super::*;
     use assert_matches::assert_matches;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn plain_column() {

@@ -186,6 +186,7 @@ mod utils {
         pub use super::*;
         mod tab_tracker {
             use super::*;
+            use pretty_assertions::assert_eq;
 
             #[test]
             fn tab_tracker_overflow() {
