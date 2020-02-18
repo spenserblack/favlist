@@ -36,6 +36,9 @@ cargo install favlist
 
 # Don't want the TUI feature?
 cargo install --no-default-features favlist
+
+# Want to get notified about new releases?
+cargo install favlist --features check-latest
 ```
 
 ## Dependencies

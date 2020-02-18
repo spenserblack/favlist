@@ -78,6 +78,7 @@ fn main() {
         println!("{}", out);
     } else {
         tui::start_ui(conn);
+        check_latest();
     }
 }
 
@@ -96,6 +97,16 @@ where
         column_values.iter().map(|(_i, v)| v.to_owned()).collect(),
     )
 }
+
+#[cfg(feature = "check-latest")]
+fn check_latest() {
+    if let Ok(Some(version)) = check_latest::check_max!() {
+        println!("A new version has been released! {}", version);
+    }
+}
+
+#[cfg(not(feature = "check-latest"))]
+fn check_latest() {}
 
 mod cli;
 mod printer;
