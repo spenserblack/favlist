@@ -21,6 +21,10 @@ favlist sub Movies 1
 
 # Launch the TUI
 favlist
+
+# Help
+favlist --help
+favlist [SUBCOMMAND] --help
 ```
 - Create a new list with `favlist new`
 - Delete a list with `favlist rem`
