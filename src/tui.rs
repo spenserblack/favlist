@@ -42,6 +42,7 @@ pub fn start_ui(conn: Connection) {
     let header_style = default_style.modifier(Modifier::BOLD);
 
     let mut tab_tracker = utils::TabTracker { current_position: 0, length: 0 };
+    let mut selected_row: usize = 0;
     'main: loop {
         let table_names = data::available_tables(&conn);
         tab_tracker.length = table_names.len();
@@ -107,7 +108,12 @@ pub fn start_ui(conn: Connection) {
                                     Blob(utf8) => from_utf8(utf8).unwrap().to_string(),
                                 }
                             });
-                        let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), default_style);
+                        let style = if tui_rows.len() == selected_row {
+                            selected_style
+                        } else {
+                            default_style
+                        };
+                        let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), style);
                         tui_rows.push(row);
                     }
                     Table::new(header.into_iter(), tui_rows.into_iter())
@@ -119,9 +125,18 @@ pub fn start_ui(conn: Connection) {
             })
             .unwrap();
 
-        match event::read().unwrap() {
+        let key = event::read().unwrap();
+        match key {
             Event::Key(key_event) => match key_event.code {
                 KeyCode::Esc => break 'main,
+                KeyCode::Down => {
+                    selected_row += 1;
+                }
+                KeyCode::Up => {
+                    if selected_row > 0 {
+                        selected_row -= 1;
+                    }
+                }
                 KeyCode::Char('<') => {
                     tab_tracker.next_back();
                 }
