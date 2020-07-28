@@ -14,7 +14,7 @@ jobs:
         run: cargo build --release
       - name: Upload Linux Asset Artifact
         id: upload-linux
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.1.1
         with:
           name: favlist-ubuntu-latest
           path: target/release/favlist
@@ -28,7 +28,7 @@ jobs:
         run: cargo build --release
       - name: Upload Windows Asset
         id: upload-windows
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.1.1
         with:
           name: favlist-windows-latest.exe
           path: target/release/favlist.exe
