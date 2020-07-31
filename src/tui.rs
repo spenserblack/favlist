@@ -41,6 +41,7 @@ pub fn start_ui(conn: Connection) {
     let header_style = default_style.modifier(Modifier::BOLD);
 
     let mut tab_tracker = utils::TabTracker { current_position: 0, length: 0 };
+    let mut selected_row: usize = 0;
     'main: loop {
         let table_names = data::available_tables(&conn);
         tab_tracker.length = table_names.len();
@@ -86,14 +87,14 @@ pub fn start_ui(conn: Connection) {
                     let mut stmt = conn.
                         prepare(&query_builder::List::new(table_name, None).to_string())
                         .unwrap();
-                    let header = stmt.column_names().into_iter().map(String::from).collect::<Vec<_>>().into_iter();
+                    let header = stmt.column_names().into_iter().map(String::from).collect::<Vec<_>>().into_iter().skip(1);
                     let width = stmt.column_count();
-                    let widths: Vec<_> = (0..width).map(|_| {Constraint::Percentage((100 / width) as u16)}).collect();
+                    let widths: Vec<_> = (1..width).map(|_| {Constraint::Percentage((100 / width - 1) as u16)}).collect();
                     let mut rows = stmt.query(NO_PARAMS).unwrap();
                     let mut tui_rows = Vec::new();
                     while let Ok(Some(row)) = rows.next() {
                         row_ids.push(row.get_unwrap("id"));
-                        let row = (0..width)
+                        let row = (1..width)
                             .map(|i| row.get_raw(i))
                             .map(|v| {
                                 use rusqlite::types::ValueRef::*;
@@ -106,7 +107,12 @@ pub fn start_ui(conn: Connection) {
                                     Blob(utf8) => from_utf8(utf8).unwrap().to_string(),
                                 }
                             });
-                        let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), default_style);
+                        let style = if tui_rows.len() == selected_row {
+                            selected_style
+                        } else {
+                            default_style
+                        };
+                        let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), style);
                         tui_rows.push(row);
                     }
                     Table::new(header.into_iter(), tui_rows.into_iter())
@@ -118,9 +124,18 @@ pub fn start_ui(conn: Connection) {
             })
             .unwrap();
 
-        match event::read().unwrap() {
+        let key = event::read().unwrap();
+        match key {
             Event::Key(key_event) => match key_event.code {
                 KeyCode::Esc => break 'main,
+                KeyCode::Down => {
+                    selected_row += 1;
+                }
+                KeyCode::Up => {
+                    if selected_row > 0 {
+                        selected_row -= 1;
+                    }
+                }
                 KeyCode::Char('<') => {
                     tab_tracker.next_back();
                 }
