@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased](https://github.com/spenserblack/favlist/compare/v1.0.0...master)
+## [Unreleased](https://github.com/spenserblack/favlist/compare/v1.0.0...HEAD)
 ### Added
 - TUI for viewing data
 ### Changed
