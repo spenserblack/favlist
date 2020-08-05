@@ -43,7 +43,7 @@ features = ["crossterm"]
 rusqlite = "0.22"
 
 [target.'cfg(windows)'.dependencies]
-rusqlite = { version = "0.21", features = ["bundled"] }
+rusqlite = { version = "0.22", features = ["bundled"] }
 
 [dev-dependencies]
 assert_matches = "1.3"
