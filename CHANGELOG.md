@@ -2,7 +2,7 @@
 
 ## [Unreleased](https://github.com/spenserblack/favlist/compare/v1.0.0...master)
 ### Added
-- TUI
+- TUI for viewing data
 ### Changed
 - Row ID to be required for `favlist sub` unless `--filter` is used
 
