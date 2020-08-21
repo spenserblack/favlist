@@ -32,6 +32,17 @@ favlist [SUBCOMMAND] --help
 - Edit values in a row with `favlist edit`
 - Print values of list with `favlist list`
 
+## TUI
+
+![TUI Screenshot](https://github.com/spenserblack/favlist/blob/master/images/screenshot.png?raw=true)
+
+The TUI is included by default. If you don't want this feature included, pass the
+`--no-default-features` flag when installing/building with `cargo`.
+
+For now, you cannot *edit* any data with the TUI, but you can *view* data.
+Switch between tables with `<` and `>`, and highlight rows with `↑` and `↓`
+on your keyboard. Exit the TUI with `ESC`.
+
 # Install
 ```bash
 # Latest released version
