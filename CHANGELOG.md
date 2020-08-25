@@ -9,7 +9,7 @@
 - :boom: Row ID to be required for `favlist sub` unless `--filter` is used
 
 ### Removed
-- Prompt for row ID if not passed to `favlist sub` and `--filter` option not used
+- :boom: Prompt for row ID if not passed to `favlist sub` and `--filter` option not used
 
 ## [1.0.0] 2020/01/21
 ### Added
