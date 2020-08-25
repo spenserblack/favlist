@@ -17,7 +17,6 @@ exclude = [
     "images/*",
     "CHANGELOG.md",
 ]
-publish = false
 
 [features]
 default = ["favlist-tui"]
