@@ -20,7 +20,8 @@ pub fn start_ui(conn: Connection) {
         backend::CrosstermBackend,
         layout::{Constraint, Direction, Layout},
         style::{Color, Modifier, Style},
-        widgets::{Block, Borders, Row, Table, Tabs, Widget},
+        text::{Span, Spans},
+        widgets::{Block, Borders, Row, Table, Tabs},
         Terminal,
     };
 
@@ -38,18 +39,23 @@ pub fn start_ui(conn: Connection) {
 
     let default_style = Style::default().fg(Color::Yellow);
     let selected_style = Style::default().fg(Color::Black).bg(Color::Yellow);
-    let header_style = default_style.modifier(Modifier::BOLD);
+    let header_style = default_style.add_modifier(Modifier::BOLD);
 
     let mut tab_tracker = utils::TabTracker { current_position: 0, length: 0 };
     let mut selected_row: usize = 0;
     'main: loop {
         let table_names = data::available_tables(&conn);
+        let table_names_spans: Vec<Spans> = table_names.iter()
+            .map(|t| {
+                Spans::from(vec![Span::raw(t)])
+            })
+            .collect();
         tab_tracker.length = table_names.len();
 
         let mut row_ids: Vec<u32> = Vec::new();
 
         terminal
-            .draw(|mut f| {
+            .draw(|f| {
                 let size = f.size();
                 let chunks = Layout::default()
                     .direction(Direction::Vertical)
@@ -60,19 +66,18 @@ pub fn start_ui(conn: Connection) {
                     ].as_ref())
                     .split(size);
                 // Surrounding block {{{
-                Block::default()
+                let block = Block::default()
                     .borders(Borders::ALL)
-                    .title("favlist")
-                    .render(&mut f, size);
+                    .title("favlist");
+                f.render_widget(block, size);
                 // }}}
                 // Table Tabs {{{
-                Tabs::default()
+                let tabs = Tabs::new(table_names_spans)
                     // .block(Block::default().title("lists"))
                     .select(tab_tracker.current_position)
-                    .titles(&table_names)
                     .style(default_style)
-                    .highlight_style(selected_style)
-                    .render(&mut f, chunks[0]);
+                    .highlight_style(selected_style);
+                f.render_widget(tabs, chunks[0]);
                 // }}}
                 // Table definition {{{
                 // NOTE Highlighting specific row
@@ -115,10 +120,10 @@ pub fn start_ui(conn: Connection) {
                         let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), style);
                         tui_rows.push(row);
                     }
-                    Table::new(header.into_iter(), tui_rows.into_iter())
+                    let table = Table::new(header.into_iter(), tui_rows.into_iter())
                         .widths(&widths)
-                        .header_style(header_style)
-                        .render(&mut f, chunks[1]);
+                        .header_style(header_style);
+                    f.render_widget(table, chunks[1]);
                 }
                 // }}}
             })
