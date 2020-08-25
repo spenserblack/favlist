@@ -60,19 +60,18 @@ pub fn start_ui(conn: Connection) {
                     ].as_ref())
                     .split(size);
                 // Surrounding block {{{
-                Block::default()
+                let block = Block::default()
                     .borders(Borders::ALL)
-                    .title("favlist")
-                    .render(&mut f, size);
+                    .title("favlist");
+                f.render_widget(block, size);
                 // }}}
                 // Table Tabs {{{
-                Tabs::default()
+                let tabs = Tabs::new(table_names)
                     // .block(Block::default().title("lists"))
                     .select(tab_tracker.current_position)
-                    .titles(&table_names)
                     .style(default_style)
-                    .highlight_style(selected_style)
-                    .render(&mut f, chunks[0]);
+                    .highlight_style(selected_style);
+                f.render_widget(tabs, chunks[0]);
                 // }}}
                 // Table definition {{{
                 // NOTE Highlighting specific row
@@ -115,10 +114,10 @@ pub fn start_ui(conn: Connection) {
                         let row = Row::StyledData(row.collect::<Vec<_>>().into_iter(), style);
                         tui_rows.push(row);
                     }
-                    Table::new(header.into_iter(), tui_rows.into_iter())
+                    let table = Table::new(header.into_iter(), tui_rows.into_iter())
                         .widths(&widths)
-                        .header_style(header_style)
-                        .render(&mut f, chunks[1]);
+                        .header_style(header_style);
+                    f.render_widget(table, chunks[1]);
                 }
                 // }}}
             })
