@@ -21,7 +21,7 @@ pub fn start_ui(conn: Connection) {
         layout::{Constraint, Direction, Layout},
         style::{Color, Modifier, Style},
         text::{Span, Spans},
-        widgets::{Block, Borders, Row, Table, Tabs, Widget},
+        widgets::{Block, Borders, Row, Table, Tabs},
         Terminal,
     };
 
