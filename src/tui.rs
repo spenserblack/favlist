@@ -20,6 +20,7 @@ pub fn start_ui(conn: Connection) {
         backend::CrosstermBackend,
         layout::{Constraint, Direction, Layout},
         style::{Color, Modifier, Style},
+        text::{Span, Spans},
         widgets::{Block, Borders, Row, Table, Tabs, Widget},
         Terminal,
     };
@@ -44,6 +45,11 @@ pub fn start_ui(conn: Connection) {
     let mut selected_row: usize = 0;
     'main: loop {
         let table_names = data::available_tables(&conn);
+        let table_names_spans: Vec<Spans> = table_names.iter()
+            .map(|t| {
+                Spans::from(vec![Span::raw(t)])
+            })
+            .collect();
         tab_tracker.length = table_names.len();
 
         let mut row_ids: Vec<u32> = Vec::new();
@@ -66,7 +72,7 @@ pub fn start_ui(conn: Connection) {
                 f.render_widget(block, size);
                 // }}}
                 // Table Tabs {{{
-                let tabs = Tabs::new(table_names)
+                let tabs = Tabs::new(table_names_spans)
                     // .block(Block::default().title("lists"))
                     .select(tab_tracker.current_position)
                     .style(default_style)
