@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/spenserblack/favlist/compare/v1.0.0...HEAD)
+## [Unreleased](https://github.com/spenserblack/favlist/compare/v1.1.0...HEAD)
+
+## [1.1.0]
 ### Added
 - TUI for viewing data
 ### Changed
@@ -27,6 +29,7 @@
 - Remove with `favlist rem`
 - Add to with `favlist add`
 
+[1.1.0]: https://github.com/spenserblack/favlist/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/spenserblack/favlist/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/spenserblack/favlist/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/spenserblack/favlist/compare/v0.1.0...v0.2.0
