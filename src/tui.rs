@@ -38,7 +38,7 @@ pub fn start_ui(conn: Connection) {
 
     let default_style = Style::default().fg(Color::Yellow);
     let selected_style = Style::default().fg(Color::Black).bg(Color::Yellow);
-    let header_style = default_style.modifier(Modifier::BOLD);
+    let header_style = default_style.add_modifier(Modifier::BOLD);
 
     let mut tab_tracker = utils::TabTracker { current_position: 0, length: 0 };
     let mut selected_row: usize = 0;
