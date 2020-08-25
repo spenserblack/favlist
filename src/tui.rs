@@ -55,7 +55,7 @@ pub fn start_ui(conn: Connection) {
         let mut row_ids: Vec<u32> = Vec::new();
 
         terminal
-            .draw(|mut f| {
+            .draw(|f| {
                 let size = f.size();
                 let chunks = Layout::default()
                     .direction(Direction::Vertical)
