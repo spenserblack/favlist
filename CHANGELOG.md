@@ -6,7 +6,7 @@
 ### Added
 - TUI for viewing data
 ### Changed
-- Row ID to be required for `favlist sub` unless `--filter` is used
+- :boom: Row ID to be required for `favlist sub` unless `--filter` is used
 
 ### Removed
 - Prompt for row ID if not passed to `favlist sub` and `--filter` option not used
