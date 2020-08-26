@@ -40,7 +40,7 @@ default-features = false
 features = ["crossterm"]
 
 [target.'cfg(not(windows))'.dependencies]
-rusqlite = "0.22"
+rusqlite = "0.24"
 
 [target.'cfg(windows)'.dependencies]
 rusqlite = { version = "0.22", features = ["bundled"] }
