@@ -26,7 +26,7 @@ favlist-tui = ["tui", "crossterm"]
 check-latest = { version = "0.4", optional = true }
 clap = "2.33"
 crossterm = { version = "0.17", optional = true }
-indexmap = { version = "1.5", features = ["serde-1"] }
+indexmap = { version = "1.6", features = ["serde-1"] }
 lazy_static = "1.4"
 prettytable-rs = { version = "0.8", default-features = false }
 regex = "1"
